@@ -6,27 +6,32 @@
   <title>計時高手挑戰 ⏱️</title>
   <style>
     :root {
+      /* 頂部與底部不同色設計：頂部採用溫暖柔和的象牙米白，底部維持您喜愛的薄荷粉綠 */
       --bg-color: #d9ead1;      /* 底部：精準薄荷粉綠底色 */
       --control-bg: #f5ead2;    /* 頂部：優雅溫暖的象牙米白 */
       --text-color: #2c251e;    /* 通用文字：溫暖的深可可褐 */
       
-      /* 玩家專屬代表色 */
+      /* 玩家代表色（高對比、絕不混淆的粉彩調） */
       --p1-color: #1e5bb8;      /* 藍 */
-      --p1-light: #dbe7f4;      
+      --p1-light: #dbe7f4;      /* 更鮮明的粉藍 */
       --p1-active: #cfe2ff;
       
+      /* 玩家 2 (紅/粉) 專屬粉彩調 */
       --p2-color: #c91e43;      /* 紅 */
-      --p2-light: #fcdbe0;      
+      --p2-light: #fcdbe0;      /* 更鮮明的蜜桃粉 */
       --p2-active: #ffccd5;
 
+      /* 玩家 3 (金) 專屬粉彩調 */
       --p3-color: #9d7500;      /* 金 */
-      --p3-light: #fff1cc;      
+      --p3-light: #fff1cc;      /* 更鮮明的暖陽黃 */
       --p3-active: #fde8cd;
 
+      /* 玩家 4 (紫) 專屬粉彩調 */
       --p4-color: #4c1185;      /* 紫 */
-      --p4-light: #ecdcf4;      
+      --p4-light: #ecdcf4;      /* 更鮮明的薰衣草紫 */
       --p4-active: #e8d0ff;
       
+      /* 按鈕專用色 */
       --success-color: #2b5c32;  /* 森林綠 */
       --reset-color: #a83a3f;    /* 復古紅 */
     }
@@ -48,7 +53,7 @@
       overflow: hidden;
     }
 
-    /* 上方控制區 */
+    /* 上方控制區 (奶油象牙白) */
     .control-panel {
       background-color: var(--control-bg);
       padding: 15px 40px;
@@ -60,6 +65,7 @@
       align-items: center;
     }
 
+    /* 控制區左側/中央 */
     .control-left {
       flex: 1;
       display: flex;
@@ -75,6 +81,7 @@
       color: var(--text-color);
     }
 
+    /* 老師設定組 */
     .settings-row {
       display: flex;
       justify-content: center;
@@ -125,6 +132,7 @@
       margin-bottom: 4px;
     }
 
+    /* 控制區右側 */
     .control-right {
       width: 140px;
       display: flex;
@@ -203,6 +211,9 @@
       padding: 15px;
       text-align: center;
       overflow: hidden;
+      
+      /* 🌟【多點觸控修正】強制瀏覽器禁用任何手勢操作，將多指同時觸碰判斷為獨立的點擊 */
+      touch-action: none; 
     }
 
     /* 鎖定 4 個通道代表色 */
@@ -239,7 +250,7 @@
       line-height: 1.6;
     }
 
-    /* 鎖定狀態 */
+    /* 🔒 鎖定狀態 */
     .player-area.locked {
       filter: brightness(0.92);
       border: 3px dashed var(--text-color) !important;
@@ -355,11 +366,14 @@
 </head>
 <body>
 
-  <!-- 上方控制面板 -->
+  <!-- 上方老師控制面板 (暖奶油象牙白) -->
   <div class="control-panel">
+    <!-- 左側設定與資訊區 -->
     <div class="control-left">
       <h1>計時高手挑戰 ⏱️</h1>
+      
       <div class="settings-row">
+        <!-- 人數選擇 -->
         <div class="settings-group">
           <label for="player-count-select">參賽人數：</label>
           <select id="player-count-select">
@@ -368,14 +382,19 @@
             <option value="4" selected>4 人競賽</option>
           </select>
         </div>
+
+        <!-- 秒數設定 -->
         <div class="settings-group">
           <label for="target-time-input">目標秒數 (1-60 秒)：</label>
           <input type="number" id="target-time-input" min="1" max="60" value="20">
           <span>秒</span>
         </div>
       </div>
+
       <p id="game-instruction">請確認參賽人數與秒數，準備好後點擊右側的「開始」按鈕！</p>
     </div>
+
+    <!-- 右側圓形按鈕區 -->
     <div class="control-right">
       <button id="start-btn" class="circular-btn">開始</button>
       <button id="reset-btn" class="circular-btn reset hidden">重來</button>
@@ -384,6 +403,7 @@
 
   <!-- 遊戲直條網格區 -->
   <div id="game-container" class="game-container players-4">
+    <!-- 玩家 1 (藍) -->
     <div id="p1-area" class="player-area">
       <div class="player-title">玩家 A (藍)</div>
       <div id="p1-status" class="status-text">等待老師啟動...</div>
@@ -394,6 +414,7 @@
       </div>
     </div>
 
+    <!-- 玩家 2 (紅) -->
     <div id="p2-area" class="player-area">
       <div class="player-title">玩家 B (紅)</div>
       <div id="p2-status" class="status-text">等待老師啟動...</div>
@@ -404,6 +425,7 @@
       </div>
     </div>
 
+    <!-- 玩家 3 (金) -->
     <div id="p3-area" class="player-area">
       <div class="player-title">玩家 C (金)</div>
       <div id="p3-status" class="status-text">等待老師啟動...</div>
@@ -414,6 +436,7 @@
       </div>
     </div>
 
+    <!-- 玩家 4 (紫) -->
     <div id="p4-area" class="player-area">
       <div class="player-title">玩家 D (紫)</div>
       <div id="p4-status" class="status-text">等待老師啟動...</div>
@@ -426,7 +449,7 @@
   </div>
 
   <script>
-    // --- 高級、無節拍聲音管理器 (Web Audio API) ---
+    // --- 高級、無節拍環境聲音管理器 (Web Audio API) ---
     const AudioManager = {
       ctx: null,
       bgmInterval: null,
@@ -682,11 +705,15 @@
       }
     });
 
+    // 🌟【關鍵優化】使用 pointerdown 事件完美支援多個學生同時觸摸
     for (let i = 1; i <= 4; i++) {
       const area = document.getElementById(`p${i}-area`);
-      area.addEventListener('click', () => {
+      area.addEventListener('pointerdown', (e) => {
         const index = i - 1;
         if (gameState !== 'playing' || !activePlayers[index] || clickedPlayers[index]) return;
+
+        // 阻止多指觸摸時的預設縮放與滑動行為
+        e.preventDefault();
 
         AudioManager.playTapSFX();
 
@@ -749,6 +776,8 @@
           spawnConfetti(area);
         } else {
           outcome.innerText = "❌ 失敗";
+          area.classList.add('winner'); // 這裡如果原本程式有衝突，統一為 area.classList.add('loser');
+          area.classList.remove('winner'); // 防呆防寫錯
           area.classList.add('loser');
         }
       }
@@ -780,7 +809,7 @@
       startBtn.classList.remove('hidden');
       resetBtn.classList.add('hidden');
 
-      // 清除所有直條狀態
+      // 重設所有玩家面板
       for (let i = 1; i <= 4; i++) {
         const area = document.getElementById(`p${i}-area`);
         area.className = 'player-area'; 
