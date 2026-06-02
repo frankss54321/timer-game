@@ -16,17 +16,14 @@
       --p1-light: #dbe7f4;      /* 更鮮明的粉藍 */
       --p1-active: #cfe2ff;
       
-      /* 玩家 2 (紅/粉) 專屬粉彩調 */
       --p2-color: #c91e43;      /* 紅 */
       --p2-light: #fcdbe0;      /* 更鮮明的蜜桃粉 */
       --p2-active: #ffccd5;
 
-      /* 玩家 3 (金) 專屬粉彩調 */
       --p3-color: #9d7500;      /* 金 */
       --p3-light: #fff1cc;      /* 更鮮明的暖陽黃 */
       --p3-active: #fde8cd;
 
-      /* 玩家 4 (紫) 專屬粉彩調 */
       --p4-color: #4c1185;      /* 紫 */
       --p4-light: #ecdcf4;      /* 更鮮明的薰衣草紫 */
       --p4-active: #e8d0ff;
@@ -55,6 +52,7 @@
 
     /* 上方控制區 (奶油象牙白) */
     .control-panel {
+      position: relative; /* 確保浮水印定位基準 */
       background-color: var(--control-bg);
       padding: 15px 40px;
       border-bottom: 2px solid #dfd4b8;
@@ -63,6 +61,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    /* ✍️ 左上角致宇老師專屬浮水印樣式 */
+    .watermark {
+      position: absolute;
+      top: 12px;
+      left: 15px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-color);
+      opacity: 0.65;
+      letter-spacing: 0.5px;
+      pointer-events: none; /* 防點擊干擾 */
+      font-family: inherit;
     }
 
     /* 控制區左側/中央 */
@@ -81,7 +93,6 @@
       color: var(--text-color);
     }
 
-    /* 老師設定組 */
     .settings-row {
       display: flex;
       justify-content: center;
@@ -132,7 +143,6 @@
       margin-bottom: 4px;
     }
 
-    /* 控制區右側 */
     .control-right {
       width: 140px;
       display: flex;
@@ -211,9 +221,7 @@
       padding: 15px;
       text-align: center;
       overflow: hidden;
-      
-      /* 🌟【多點觸控修正】強制瀏覽器禁用任何手勢操作，將多指同時觸碰判斷為獨立的點擊 */
-      touch-action: none; 
+      touch-action: none; /* 多點觸控修正 */
     }
 
     /* 鎖定 4 個通道代表色 */
@@ -366,14 +374,15 @@
 </head>
 <body>
 
-  <!-- 上方老師控制面板 (暖奶油象牙白) -->
+  <!-- 上方控制面板 -->
   <div class="control-panel">
+    <!-- ✍️ 左上角專屬浮水印 -->
+    <div class="watermark">Designed by 致宇老師</div>
+
     <!-- 左側設定與資訊區 -->
     <div class="control-left">
       <h1>計時高手挑戰 ⏱️</h1>
-      
       <div class="settings-row">
-        <!-- 人數選擇 -->
         <div class="settings-group">
           <label for="player-count-select">參賽人數：</label>
           <select id="player-count-select">
@@ -382,19 +391,14 @@
             <option value="4" selected>4 人競賽</option>
           </select>
         </div>
-
-        <!-- 秒數設定 -->
         <div class="settings-group">
           <label for="target-time-input">目標秒數 (1-60 秒)：</label>
           <input type="number" id="target-time-input" min="1" max="60" value="20">
           <span>秒</span>
         </div>
       </div>
-
       <p id="game-instruction">請確認參賽人數與秒數，準備好後點擊右側的「開始」按鈕！</p>
     </div>
-
-    <!-- 右側圓形按鈕區 -->
     <div class="control-right">
       <button id="start-btn" class="circular-btn">開始</button>
       <button id="reset-btn" class="circular-btn reset hidden">重來</button>
@@ -705,14 +709,14 @@
       }
     });
 
-    // 🌟【關鍵優化】使用 pointerdown 事件完美支援多個學生同時觸摸
+    // 指標按下事件（完美支援多點觸控） [2]
     for (let i = 1; i <= 4; i++) {
       const area = document.getElementById(`p${i}-area`);
       area.addEventListener('pointerdown', (e) => {
         const index = i - 1;
         if (gameState !== 'playing' || !activePlayers[index] || clickedPlayers[index]) return;
 
-        // 阻止多指觸摸時的預設縮放與滑動行為
+        // 阻止多指觸摸時的預設手勢動作
         e.preventDefault();
 
         AudioManager.playTapSFX();
@@ -776,8 +780,6 @@
           spawnConfetti(area);
         } else {
           outcome.innerText = "❌ 失敗";
-          area.classList.add('winner'); // 這裡如果原本程式有衝突，統一為 area.classList.add('loser');
-          area.classList.remove('winner'); // 防呆防寫錯
           area.classList.add('loser');
         }
       }
